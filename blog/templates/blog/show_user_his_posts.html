@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+{% block body %}
+
+<!-- bradcam_area  -->
+<div class="bradcam_area bradcam_bg_1">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="bradcam_text">
+                    <h3>Your Posts</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="alert alert-info" role="alert" style="margin-top: 10px;">
+    <h4 class="alert-heading">Tip!</h4>
+    <p>Creating technology-related posts will make you stand out on our main page as one of the top 10 candidates,
+        therefore increasing your chances of finding better job opportunities.</p>
+</div> <!--/ bradcam_area  -->
+
+<div class="job_details_area">
+    <div class="container">
+        <div class="row" style="margin-left: 20% ;">
+            <div class="col-lg-8">
+                <div class="apply_job_form white-bg" style="background-color: rgba(51, 50, 50, 0.959);">
+                    <h4 style="font-weight: bolder; size: 80%;">Your technical Posts</h4>
+
+
+                    {% if messages %}
+
+
+                    {% for message in messages %}
+                    <ul {% if message.tags %} class="{{ message.tags }}" {% endif %}>
+                        <li>
+                            {{ message }}
+                        </li>
+                    </ul>
+                    {% endfor %}
+
+
+
+                    {% else %}
+
+
+                        {% if posts %}
+                        <ol class="list-group" style="margin-right: 10px;">
+                            {% for post in posts %}
+                            <li class="list-group-item">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5>
+                                        <a href="" class="text-decoration-none text-success"">{{ post.title|truncatechars:20 }}</a>
+                                    </h5>
+                                    <small>{{ post.create_at }}</small>
+                                </div>
+                                <div style="text-align:center;">
+                                    <img src="{{ post.post_image.url }}" alt="{{ post.title }}"
+                                    style="width: 20%; height: 20%; display: inline-block;" class="rounded-circle">
+                                    
+                                </div>
+                                <p >{{ post.post_content|truncatechars:100 }}</p>
+                                <p>Likes: {{ post.likes.count }}</p>
+                                <a class="btn btn-danger" href="{% url 'blog:delete_post' post.title %}">Delete</a>
+                            </li>
+                            {% endfor %}
+                        </ol>
+                        {% if posts.has_other_pages %}
+                        <nav aria-label="Page navigation example" style="margin-left: 37%; margin-top: 10px;">
+                            <ul class="pagination">
+                                {% if posts.has_previous %} 
+                              <li class="page-item"><a class="page-link" href="?page={{ posts.previous_page_number }}">previous</a></li>
+                              {% endif %}
+                              
+                              {% for i in posts.paginator.page_range %} 
+                              <li class="page-item"><a class="page-link" href="?page={{i}}">{{i}}</a></li>
+
+                              {% endfor %} 
+                              {% if posts.has_next %}
+                                
+                              
+                                
+                              <li class="page-item"><a class="page-link" href="?page={{ jobs.next_page_number }}">next</a></li>
+                              {% endif %}
+                            </ul>
+                          </nav>
+                          {% endif %} 
+                          
+                        {% else %}
+
+                        <div class="alert alert-info" role="alert" style="margin-left: -50px;">
+                            <h4 class="alert-heading">No Posts yet!</h4>
+                            <p>Try to create some <a href="{% url 'blog:add-blog-post' %}">click here</a>.</p>
+                        </div> <!--/ bradcam_area  -->
+
+                        {% endif %}
+
+
+                        {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock body %}

@@ -1,0 +1,299 @@
+{% extends 'base.html' %}
+{% load django_bootstrap5 %}
+{% block body %}
+  
+<body>
+    <!--[if lte IE 9]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+        <![endif]-->
+
+    <!-- header-start -->
+    <!-- header-end -->
+
+    <!-- slider_area_start -->
+    <div class="slider_area">
+        <div class="single_slider  d-flex align-items-center slider_bg_1">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-7 col-md-6">
+                        <div class="slider_text">
+                            <h5 class="wow fadeInLeft" data-wow-duration="1s" data-wow-delay=".2s">+{{ job_counts }} Jobs listed</h5>
+                            <h3 class="wow fadeInLeft" data-wow-duration="1s" data-wow-delay=".3s">Find your Dream Job</h3>
+                            <p class="wow fadeInLeft" data-wow-duration="1s" data-wow-delay=".4s">We provide online instant cash loans with quick approval that suit your term length</p>
+                            <div class="sldier_btn wow fadeInLeft" data-wow-duration="1s" data-wow-delay=".5s">
+                                <a href="{% url 'jobs:' %}" class="boxed-btn3">Brows Jobs</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="ilstration_img wow fadeInRight d-none d-lg-block text-right" data-wow-duration="1s" data-wow-delay=".2s">
+            <img src="{ static 'img/banner/illustration.png'}" alt="">
+        </div>
+    </div>
+    <!-- slider_area_end -->
+
+    <!-- catagory_area -->
+    <div class="catagory_area">
+        <div class="container">
+
+            <form method="get">
+            {% bootstrap_form my_filter.form %}
+            <a href="#joblist"><button  class="boxed-btn3 w-100" type="submit">Find Job</button></a>
+        </form>
+
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--/ catagory_area -->
+    <!-- popular_catagory_area_start  -->
+    <div class="popular_catagory_area">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section_title mb-40">
+                        <h3>Popular Categories</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                {% for category in categories %}
+                <div class="col-lg-4 col-xl-3 col-md-6">
+                    <div class="single_catagory">
+                            
+                        <a href="../jobs?job_type=&description=&published=&Vacancy=&salary=&category={{category.id}}&experience="><h4>{{ category }}</h4></a>
+                        <p> <span>{{ category.job_set.count }}</span> Available position</p>
+                        
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <!-- popular_catagory_area_end  -->
+     
+    <!-- job_listing_area_start  -->
+    <div class="job_listing_area">
+        <div class="container">
+            <div class="row align-items-center">
+                    <div class="section_title" id="joblist">
+                        <h3>Job Listing</h3>
+                    </div>
+
+                <div class="col-lg-6">
+                    <div class="brouse_job text-right">
+                        <a href="{% url 'jobs:' %}" class="boxed-btn4">Browse More Job</a>
+                    </div>
+                </div>
+            </div>
+           
+            <div class="job_lists" >
+                <div class="row" >
+                    {% for job in jobs %}
+                    <div class="col-lg-12 col-md-12">
+                        
+                        <div class="single_jobs white-bg d-flex justify-content-between">
+                            <div class="jobs_left d-flex align-items-center">
+                                <div class="thumb">
+                                    <img src="{{ job.img.url }}" alt="" style="width: 180%; height: 180%; margin-left: -34%; margin-top: -35%;">
+                                </div>
+                                <div class="jobs_conetent">
+                                    <a href="job_details.html"><h4>{{ job.title }}</h4></a>
+                                    <div class="links_locat d-flex align-items-center">
+                                        <div class="location">
+                                            <p> <i class="fa fa-map-marker"></i> {{job.location}}</p>
+                                        </div>
+                                        <div class="location">
+                                            <p> <i class="fa fa-clock-o"></i> {{ job.job_type }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="jobs_right">
+                                <div class="apply_now">
+                                    <a class="heart_mark" href="#"> <i class="ti-heart"></i> </a>
+                                    <a href="{% url 'jobs:jobs_details' job.slug %}" class="boxed-btn3">Apply Now</a>
+                                </div>
+                                <div class="date">
+                                    <p>{{job.published|date:'d M Y'}}</p>
+                                </div>
+                            </div>
+                        </div>
+                       
+
+                    </div>
+                    {% endfor %}
+                </div>
+                
+            </div>
+           
+        </div>
+    </div>
+    <!-- job_listing_area_end  -->
+
+
+    <!-- featured_candidates_area_start  -->
+    <div class="featured_candidates_area">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section_title text-center mb-40">
+                        <h3>Featured Candidates</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="candidate_active owl-carousel">
+                        
+                        {% if top_10 %}
+                            
+                        
+                        {% for profile in top_10 %}
+                            
+                        
+                            
+                         
+                         {% if profile.user.email %}
+                            
+                         
+                               
+                        <div class="single_candidates text-center">
+                            
+                            {% if profile.ProfileImg %}
+                                
+                            
+                                
+                            <div class="thumb">
+                                <img src="{{ profile.ProfileImg.url }}" alt="">
+                            </div>
+                            {% else %}
+                            <div class="thumb">
+                                <img src="" alt="">
+                            </div>
+                            {% endif %}
+                            
+                            {% if profile.is_cv_public %}
+                                
+                            
+                                
+                            <a href="{{profile.cv.url}}"><h4>{{profile.user.username}}</h4></a>
+                            {% else %}
+                            <h4>{{profile.user.username}}</h4>
+                            {% endif %}
+                            
+                            <p style="font-size: small;">{{profile.user.email}}</p>
+                            
+                            {% if profile.specialization %}
+                                
+                                
+                            <p>{{profile.specialization}}</p>
+                            {% endif %}
+
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="alert-heading">No Featured Candidates yet </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- featured_candidates_area_end  -->
+
+    <div class="top_companies_area">
+        <div class="container">
+            <div class="row align-items-center mb-40">
+                <div class="col-lg-6 col-md-6">
+                    <div class="section_title">
+                        <h3>Top 10 Companies</h3>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6">
+                    <div class="brouse_job text-right">
+                        <a href="{% url 'jobs:' %}" class="boxed-btn4">Browse More Job</a>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                
+                
+                    
+                {% if top_10_company %}
+                    
+                {% for company in top_10_company %}         
+                    
+                <div class="col-lg-4 col-xl-3 col-md-6">
+
+                        
+                    
+                        
+                    <div class="single_company">
+                        
+                            
+                        
+                        {% if company.ProfileImg %}
+
+                        <div class="thumb d-flex justify-content-center">
+                            <img src="" class="img-fluid rounded" alt="Company Profile Image" style="width: 400px; height: 70px;">
+                        </div>
+                        {% else %}
+                        <div class="thumb">
+                            <img src="" alt="CompanyImage">
+                        </div>
+                        {% endif %}
+                        <a href="../jobs/?job_type=&description=&published=&Vacancy=&salary=&category=&experience=&CreateBy={{company.user.id}}"><h3>{{company.user.username}}</h3></a>
+                        <p> <span>{{company.total_jobs}}</span> Available position</p>
+                        
+                        {% if company.specialization %}
+                        <p> specialization: {{ company.specialization }}</p>
+                        {% endif %}
+                            
+                        
+                    </div>
+
+                </div>
+                {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- job_searcing_wrap  -->
+    <div class="job_searcing_wrap overlay">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-5 offset-lg-1 col-md-6">
+                    <div class="searching_text">
+                        <h3>Looking for a Job?</h3>
+                        <p>We provide online instant cash loans with quick approval </p>
+                        <a href="{% url 'jobs:' %}" class="boxed-btn3">Browse Job</a>
+                    </div>
+                </div>
+                <div class="col-lg-5 offset-lg-1 col-md-6">
+                    <div class="searching_text">
+                        <h3>Looking for a Expert?</h3>
+                        <p>We provide online instant cash loans with quick approval </p>
+                        <a href="{% url 'jobs:AddNewJob' %}" class="boxed-btn3">Post a Job</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- job_searcing_wrap end  -->
+
+
+    <!-- footer start -->
+    <!--/ footer end  -->
+
+    <!-- link that opens popup -->
+    <!-- JS here -->
+</body>
+{% endblock body %}

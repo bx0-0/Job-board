@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+{% load static %}
+{% block body %}
+
+<body>
+   <!--[if lte IE 9]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+        <![endif]-->
+
+   <!-- bradcam_area  -->
+   <div class="bradcam_area bradcam_bg_1">
+      <div class="container">
+         <div class="row">
+            <div class="col-xl-12">
+               <div class="bradcam_text">
+                  <h3>reply comment</h3>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+   <!--/ bradcam_area  -->
+   <div class="alert alert-info" role="alert" style="margin-top: 10px; text-align: center;">
+      <h4 class="alert-heading">Tip!</h4>
+      <p class="alert-heading">here you can replay comment which you choice click for the Below replay button  to start</p>
+   </div>
+   <!--================Blog Area =================-->
+   <section class="blog_area single-post-area section-padding">
+
+      <div class="container">
+
+         <div class="row">
+            <div class="col-lg-8 comments-list">
+               <div class="single-post">
+                  <div class="feature-img">
+
+                     <div class="blog_details">
+                        <h2>{{post.title}}</h2>
+                        </h2>
+                        <ul class="blog-info-link mt-3 mb-4">
+                           <li><a href="#"><i class="fa fa-user"></i> {{post.created_By.username}}</a></li>
+                           <li><a href="#"><i class="fa fa-user"></i> {{post.created_By.email}}</a></li>
+                           <li><a href="#"><i class="fa fa-user"></i> {{post.category}}</a></li>
+                           <li><a href="#"><i class="fa fa-comments"></i> {{comments_count}} Comments</a></li>
+                        </ul>
+                        <p class="excert">
+                           {{post.post_content | truncatechars:200}}
+                        </p>
+                     </div>
+                  </div>
+                  <div class="navigation-top">
+
+
+                  </div>
+
+                  <div class="comments-area">
+                     <div class="comment-list">
+
+
+                        {% if comment %}
+                        <div class="single-comment justify-content-between d-flex" style="border-bottom: 1px solid #ccc; margin-bottom: 10px;">
+                            <div class="user justify-content-between d-flex">
+                                <div class="thumb">
+                                    <img src="{{comment.user.profile.ProfileImg}}" alt="">
+                                </div>
+                                <div class="desc">
+                                    <p class="comment">
+                                        {{comment.comment}}
+                                    </p>
+                                    <div class="d-flex justify-content-between">
+                                        <div class="d-flex align-items-center">
+                                            <h5>
+                                                <a href="#">{{comment.user.username}}</a>
+                                            </h5>
+                                            <p class="date">{{comment.created_on}} </p>
+                                        </div>
+                                        <div class="reply-btn" style="margin-left: 2%;">
+                                            <button class="btn btn-sm btn-primary" type="button" data-toggle="collapse"
+                                                data-target="#replyBox{{comment.id}}" aria-expanded="false"
+                                                aria-controls="replyBox{{comment.id}}">
+                                                Reply
+                                            </button>
+                                            <div class="collapse" id="replyBox{{comment.id}}">
+                                                <div class="card card-body my-2">
+                                                    <form method="post">
+                                                        {% csrf_token %}
+                                                        <div class="form-group">
+                                                            <label for="comment">Post a reply </label>
+                                                            <textarea class="form-control" name="comment"
+                                                                placeholder="Enter comment here" rows="3"></textarea>
+                                                        </div>
+                                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Display the replies to the comment -->
+                        {% for reply in replay_comments %}
+                        <div class="single-comment justify-content-between d-flex" style="border-bottom: 1px solid #ccc; margin-bottom: 10px;">
+                            <div class="user justify-content-between d-flex">
+                                <div class="thumb">
+                                    <img src="{{reply.user.profile.ProfileImg}}" alt="">
+                                </div>
+                                <div class="desc">
+                                 
+                                 {% if reply.replay_to %}
+                                    
+                                 
+                                    
+                                    <p class="comment">
+                                       replay to : {{reply.replay_to}}
+                                    </p>
+                                    {% endif %}
+                                    <p class="comment">
+                                       {{reply.comment}}
+                                    </p>
+                                    <div class="d-flex justify-content-between">
+                                        <div class="d-flex align-items-center">
+                                            <h5>
+                                                <a href="#">{{reply.user.username}}</a>
+                                            </h5>
+                                            <p class="date">{{reply.created_on}} </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="reply-btn" style="margin-left: 2%;">
+                              <button class="btn btn-sm btn-primary" type="button" data-toggle="collapse"
+                                  data-target="#replyBox{{reply.id}}" aria-expanded="false"
+                                  aria-controls="replyBox{{reply.id}}">
+                                  Reply
+                              </button>
+                              <div class="collapse" id="replyBox{{reply.id}}">
+                                  <div class="card card-body my-2">
+                                    <form method="post">
+                                       {% csrf_token %}
+                                       <div class="form-group">
+                                           <label for="comment">Post a reply </label>
+                                           <textarea class="form-control" name="comment" placeholder="Enter comment here" rows="3"></textarea>
+                                           <!-- Hidden field for the ID -->                                               
+                                           <input type="hidden" name="comment_id" value="{{reply.id}}">
+
+                                       </div>
+                                       <button type="submit" class="btn btn-primary">Submit</button>
+                                   </form>
+                                   
+                                  </div>
+                              </div>
+                          </div>
+
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+                        
+                     </div>
+
+                  </div>
+               </div>
+            </div>
+         </div>
+   </section>
+   <!--================ Blog Area end =================-->
+
+</body>
+
+{% endblock body %}

@@ -1,0 +1,188 @@
+{% extends 'base.html' %}
+{% load django_bootstrap5 %}
+{% block body %}
+  
+
+<body>
+    <!--[if lte IE 9]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+        <![endif]-->
+
+
+
+    <!-- bradcam_area  -->
+    <div class="bradcam_area bradcam_bg_1">
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-12">
+                    <div class="bradcam_text">
+                        <h3>blog</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--/ bradcam_area  -->
+
+
+    <!--================Blog Area =================-->
+    <section class="blog_area section-padding">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mb-5 mb-lg-0">
+                    <div class="blog_left_sidebar">
+                        
+                        {% for post in posts %}
+                            
+                        
+                            
+                        <article class="blog_item">
+                            <div class="blog_item_img">
+                                <img class="card-img rounded-0" src="{{post.post_image.url}}" alt="">
+                                <a href="/blog/show-post-{{post.id}}/" class="blog_item_date">
+                                    <h5>{{ post.create_at }}</h5>
+                                </a>
+                            </div>
+
+                            <div class="blog_details">
+                                <a class="d-inline-block text-info" href="/blog/show-post-{{post.id}}/">
+                                    <h2 style="color: rgba(240, 248, 255, 0.521);">{{post.title}}</h2>
+                                </a>
+                                <p style="color: aliceblue;">{{post.post_content}}.</p>
+                                <ul class="blog-info-link ">
+                                    <li><a href="#"><i class="fa fa-user"></i> {{post.category}}</a></li>
+                                    <li><a href="#"><i class="fa fa-comments"></i> 03 Comments</a></li>
+                                </ul>
+                            </div>
+                        </article>
+                        {% endfor %}
+
+
+                        {% if posts.has_other_pages %}
+                        <nav class="blog-pagination justify-content-center d-flex">
+                            <ul class="pagination">
+                                {% if posts.has_previous %}
+                                <li class="page-item">
+                                    <a href="?page={{ posts.previous_page_number }}" class="page-link" aria-label="Previous">
+                                        <i class="ti-angle-left"></i>
+                                    </a>
+                                </li>
+                                {% endif %}
+                                {% for i in posts.paginator.page_range %}
+                                <li class="page-item">
+                                    <a href="?page={{i}}" class="page-link">{{i}}</a>
+                                </li>
+                                {% endfor %} 
+                                {% if posts.has_next %}
+                                <li class="page-item">
+                                    <a href="?page={{ posts.next_page_number }}" class="page-link" aria-label="Next">
+                                        <i class="ti-angle-right"></i>
+                                    </a>
+                                </li>
+                                {% endif %} 
+                            </ul>
+                        </nav>
+                        {% endif %} 
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="blog_right_sidebar">
+                        <aside class="single_sidebar_widget search_widget">
+                            <form method="get">
+                                {% bootstrap_form filter.form %}
+                                <button class="button rounded-0 primary-bg text-white w-100 btn_1 boxed-btn"
+                                    type="submit">Search</button>
+                            </form>
+                        </aside>
+
+                        <aside class="single_sidebar_widget post_category_widget">
+                            <h4 class="widget_title">Category</h4>
+                            <ul class="list cat-list">
+                                
+                                {% if categories %}
+                                    
+                                
+                                    
+                                {% for category in categories %}
+                                    
+                                    
+                                <li>
+                                    <a href="/blog/?multi_name_fields=test&category={{category.id}}" class="d-flex">
+                                        <p>{{category.name}}({{category.post_category.count}})</p>
+                                        
+                                    </a>
+                                </li>
+                                {% endfor %}
+                                {% endif %}
+                            </ul>
+                        </aside>
+
+
+                        <aside class="single_sidebar_widget popular_post_widget">
+                     
+                     
+                        
+                    
+                        
+                            <h3 class="widget_title">Recent Post</h3>
+                            {% if recent_post %}
+                            
+                            {% for post in recent_post %}
+                               
+                            
+                               
+                            <div class="media post_item">
+                               <img src="{{post.post_image.url}}" alt="post" class="img-thumbnail rounded-circle  w-50 h-50">            
+                                           <div class="media-body">
+                                  <a href="/blog/show-post-{{post.id}}/">
+                                     <h3>{{post.title|truncatechars:27}}</h3>
+                                  </a>
+                                  <p>{{post.create_at}}</p>
+                               </div>
+                               
+                            </div>
+                            {% endfor %}
+                            {% endif %}
+                         </aside>
+       
+
+
+                        <aside class="single_sidebar_widget newsletter_widget">
+                            <h4 class="widget_title">Newsletter</h4>
+
+                            <form action="#">
+                                <div class="form-group">
+                                    <input type="email" class="form-control" onfocus="this.placeholder = ''"
+                                        onblur="this.placeholder = 'Enter email'" placeholder='Enter email' required>
+                                </div>
+                                <button class="button rounded-0 primary-bg text-white w-100 btn_1 boxed-btn"
+                                    type="submit">Subscribe</button>
+                            </form>
+                        </aside>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--================Blog Area =================-->
+
+
+
+
+    <script>
+        $('#datepicker').datepicker({
+            iconsLibrary: 'fontawesome',
+            icons: {
+             rightIcon: '<span class="fa fa-caret-down"></span>'
+         }
+        });
+        $('#datepicker2').datepicker({
+            iconsLibrary: 'fontawesome',
+            icons: {
+             rightIcon: '<span class="fa fa-caret-down"></span>'
+         }
+
+        });
+    </script>
+</body>
+{% endblock body %}

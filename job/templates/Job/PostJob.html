@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+{% block body %}
+
+    <!-- bradcam_area  -->
+    <div class="bradcam_area bradcam_bg_1">
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-12">
+                    <div class="bradcam_text">
+                        <h3>Add New Job</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--/ bradcam_area  -->
+
+    <div class="job_details_area">
+        <div class="container">
+            <div class="row" style="margin-left: 20% ;">
+                <div class="col-lg-8" >
+                    <div class="apply_job_form white-bg" style="background-color: rgba(51, 50, 50, 0.959);">
+                        <h4 style="font-weight: bolder; size: 80%;">Post job</h4>
+
+                        
+                        {% if messages %}
+
+                        
+                        {% for message in messages %}
+                            <ul
+                            
+                            {% if message.tags %}
+                                class="{{ message.tags }}"
+                            {% endif %}
+                                
+                            >
+                                <li>
+                                    {{ message }}
+                                </li>
+                            </ul>
+                        {% endfor %}
+                            
+                            
+                        
+                        {% else %}    
+                        <form method="POST" enctype="multipart/form-data" style="background-color: rgba(0, 0, 0, 0.062); font-size: larger;">
+                            {% csrf_token %}
+
+                            {% bootstrap_form form %}
+                        
+                            <button class="boxed-btn3 w-100" type="submit">Apply Now</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock body %}

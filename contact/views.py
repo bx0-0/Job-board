@@ -1,0 +1,34 @@
+from django.shortcuts import render
+from django.core.mail import send_mail
+from django.conf import settings
+from django.contrib import messages
+
+# Create your views here.
+
+
+def send_massage(request):
+    if request.method == "POST":
+        subject = request.POST.get("subject")
+        message = request.POST.get("message")
+        email = request.POST.get("email")
+
+        if subject and message and email:
+            try:
+                send_mail(
+                    subject=subject,
+                    message=message,
+                    from_email=email,  #!from
+                    recipient_list=[settings.EMAIL_HOST_USER],  #! to
+                    fail_silently=False,
+                )
+                messages.success(
+                    request=request, message="Email has been sent successfully."
+                )
+
+            except Exception:  # Catch the exception
+                messages.error(request=request, message="Error occurred: ")
+        else:
+            messages.info(request=request, message="All fields are required.")
+
+    context = {}
+    return render(request, "contact/contact.html", context=context)

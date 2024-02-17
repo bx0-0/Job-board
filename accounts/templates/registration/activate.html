@@ -1,0 +1,21 @@
+{% extends "base_generic.html" %}
+{% block content %}
+
+
+{% if messages %}
+
+
+{% for message in messages %}
+
+<ul {% if message.tags %} class="{{ message.tags }}" {% endif %}>
+
+    <li>{{ message }}</li>
+</ul>
+
+{% endfor %}
+
+{% else %}
+<p><strong>Go back no thing here</strong></p>
+{% endif %}
+
+{% endblock %}

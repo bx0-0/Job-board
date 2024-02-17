@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+{% block body %}
+
+    <!-- bradcam_area  -->
+    <div class="bradcam_area bradcam_bg_1">
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-12">
+                    <div class="bradcam_text">
+                        <h3>{{job.title}}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--/ bradcam_area  -->
+
+    <div class="job_details_area " >
+        <div class="container " >
+            <div class="row " >
+                <div class="col-lg-7 mx-auto" >
+                    <div class="job_sumary">
+                        <div class="summery_header">
+                            <h3>Edit profile</h3>
+                        </div>
+                        <div class="job_content">
+                            {% if messages %}
+                                
+                            
+                            {% for message in messages %}
+                                <ul>
+                                    <li>{{ message }}</li>
+                                </ul>
+                            {% endfor %}
+                                
+                             {% else %}   
+                            <form method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                {% bootstrap_form UserForm %}
+                                {% bootstrap_form ProfileForm %}
+                                <div><button class="boxed-btn3 w-100" type="submit">Save</button></div>
+                            </form>
+                            {% endif %}
+                        </div>
+            </div>
+        </div>
+    </div>
+{% endblock body %}

@@ -1,0 +1,235 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+{% load static %}
+{% block body %}
+<body>
+   <!--[if lte IE 9]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+        <![endif]-->
+
+  <!-- bradcam_area  -->
+  <div class="bradcam_area bradcam_bg_1">
+      <div class="container">
+          <div class="row">
+              <div class="col-xl-12">
+                  <div class="bradcam_text">
+                      <h3>single blog</h3>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+  <!--/ bradcam_area  -->
+
+   <!--================Blog Area =================-->
+   <section class="blog_area single-post-area section-padding">
+      <div class="container">
+         <div class="row">
+            <div class="col-lg-8 comments-list">
+               <div class="single-post">
+                  <div class="feature-img">
+                     <img class="img-fluid" src="{{post.post_image.url}}" alt="">
+                  </div>
+                  <div class="blog_details">
+                     <h2>{{post}}</h2>
+                     </h2>
+                     <ul class="blog-info-link mt-3 mb-4">
+                        <li><a href="#"><i class="fa fa-user"></i> {{post.created_By.username}}</a></li>
+                        <li><a href="#"><i class="fa fa-user"></i> {{post.created_By.email}}</a></li>
+                        <li><a href="#"><i class="fa fa-user"></i> {{post.category}}</a></li>
+                        <li><a href="#"><i class="fa fa-comments"></i> {{comments_count}} Comments</a></li>
+                     </ul>
+                     <p class="excert">
+                        {{post.post_content}}
+                     </p>
+                  </div>
+               </div>
+
+
+
+               <div class="navigation-top">
+                  <div class="d-sm-flex justify-content-between text-center">
+                      <div class="col-sm-4 text-center my-2 my-sm-0">
+                          <!-- زر الإعجاب -->
+                          <button id="like-button" class="btn {{ is_liked|yesno:'btn-danger,btn-outline-danger' }}">
+                              <span class="align-middle"><i class="fa fa-heart"></i></span> Like
+                          </button>
+                          <p class="like-info"><span class="align-middle"><i class="fa fa-heart"></i></span> <span id="like-count">{{ post.total_likes }}</span> Likes</p>
+                      </div>
+                      <div class="col-sm-4 text-center my-2 my-sm-0">
+                          <p class="comment-count"><span class="align-middle"><i class="fa fa-comment"></i></span> 0{{comments_count}} Comments</p>
+                      </div>
+                  </div>
+              </div>
+              
+              <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+              <script type="text/javascript">
+                  $('#like-button').click(function () {
+                      var post_id = {{ post.id }};
+                      $.ajax({
+                          type: 'POST',
+                          url: "{% url 'blog:like_post' post.id %}",
+                          data: {'id': post_id, 'csrfmiddlewaretoken': '{{ csrf_token }}'},
+                          dataType: 'json',
+                          success: function (response) {
+                              $('#like-count').text(response.total_likes);
+                              if (response.is_liked) {
+                                  $('#like-button').addClass('btn-danger');
+                                  $('#like-button').removeClass('btn-outline-danger');
+                              } else {
+                                  $('#like-button').addClass('btn-outline-danger');
+                                  $('#like-button').removeClass('btn-danger');
+                              }
+                          },
+                      });
+                  });
+              </script>
+              
+
+
+               <div class="comments-area">
+                  <h4>{{comments_count}} Comments</h4>
+                  <div class="comment-list">
+
+                     
+                     {% if comments %}
+                     {% for comment in comments %} 
+                     {% if comment.parent is None %} 
+                     <div class="single-comment justify-content-between d-flex" style="border-bottom: 1px solid #ccc; margin-bottom: 10px;">
+                        <div class="user justify-content-between d-flex">
+                            <div class="thumb">
+                                <img src="{{comment.user.profile.ProfileImg}}" alt="">
+                            </div>
+                            <div class="desc">
+
+                              
+                                  <p class="comment">
+                                      {{comment.comment}}
+                                  </p>
+                              
+                                <div class="d-flex justify-content-between">
+                                    <div class="d-flex align-items-center">
+                                        <h5>
+                                            <a href="#">{{comment.email}}</a>
+                                        </h5>
+                                        <p class="date">{{comment.created_on}} </p>
+                                    </div>
+                                    <div class="reply-btn" style="margin-left: 2%;">
+                                       <a class="btn btn-sm btn-primary" href="/blog/{{post.id}}/reply-{{comment.id}}" style="color: white; font-weight: bold;">
+                                          Reply
+                                      </a>
+                                      
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                     {% endfor %}
+                        <nav class="blog-pagination justify-content-center d-flex">
+                        <ul class="pagination">
+                            {% if comments.has_previous %}
+                            <li class="page-item">
+                                <a href="?page={{ comments.previous_page_number }}" class="page-link" aria-label="Previous">
+                                    <i class="ti-angle-left"></i>
+                                </a>
+                            </li>
+                            {% endif %}
+                            {% for i in comments.paginator.page_range %}
+                            <li class="page-item">
+                                <a href="?page={{i}}" class="page-link">{{i}}</a>
+                            </li>
+                            {% endfor %} 
+                            {% if comments.has_next %}
+                            <li class="page-item">
+                                <a href="?page={{ comments.next_page_number }}" class="page-link" aria-label="Next">
+                                    <i class="ti-angle-right"></i>
+                                </a>
+                            </li>
+                            {% endif %} 
+                        </ul>
+                    </nav>
+
+                     {% endif %}
+                  </div>
+
+               </div>
+               <div class="comment-form">
+                  <h4>Leave a Reply</h4>
+                  <form class="form-contact comment_form" method="post" id="commentForm">
+                     {% csrf_token %}
+                     {% bootstrap_form form %}
+                     <div class="form-group">
+                        <button type="submit" class="button button-contactForm btn_1 boxed-btn">Send Message</button>
+                     </div>
+                  </form>
+               </div>
+            </div>
+            <div class="col-lg-4">
+               <div class="blog_right_sidebar">
+
+                  <aside class="single_sidebar_widget post_category_widget">
+                     <h4 class="widget_title">Category</h4>
+                     <ul class="list cat-list">
+                        {% if categories %}
+                        {% for category  in categories %}
+                           
+                        
+                           
+                        <li>
+                           <a href="/blog/?multi_name_fields=test&category={{category.id}}" class="d-flex">
+                              <p>{{category}}({{category.post_category.count}})</p>
+                           </a>
+                        </li>
+                        {% endfor %}
+                        {% endif %}
+                     </ul>
+                  </aside>
+                  <aside class="single_sidebar_widget popular_post_widget">
+                     
+                     
+                        
+                    
+                        
+                     <h3 class="widget_title">Recent Post</h3>
+                     {% if recent_post %}
+                     
+                     {% for post in recent_post %}
+                        
+                     
+                        
+                     <div class="media post_item">
+                        <img src="{{post.post_image.url}}" alt="post" class="img-thumbnail rounded-circle  w-50 h-50">            
+                                    <div class="media-body">
+                           <a href="/blog/show-post-{{post.id}}/">
+                              <h3>{{post.title|truncatechars:27}}</h3>
+                           </a>
+                           <p>{{post.create_at}}</p>
+                        </div>
+                        
+                     </div>
+                     {% endfor %}
+                     {% endif %}
+                  </aside>
+                  <aside class="single_sidebar_widget newsletter_widget">
+                     <h4 class="widget_title">Newsletter</h4>
+                     <form action="#">
+                        <div class="form-group">
+                           <input type="email" class="form-control" onfocus="this.placeholder = ''"
+                              onblur="this.placeholder = 'Enter email'" placeholder='Enter email' required>
+                        </div>
+                        <button class="button rounded-0 primary-bg text-white w-100 btn_1 boxed-btn"
+                           type="submit">Subscribe</button>
+                     </form>
+                  </aside>
+               </div>
+            </div>
+         </div>
+      </div>
+      
+   </section>
+   <!--================ Blog Area end =================-->
+
+</body>
+
+{% endblock body %}
