@@ -88,7 +88,7 @@ class ProfileForm(forms.ModelForm):
         super(ProfileForm, self).__init__(*args, **kwargs)
         user_profile = self.instance
         if user_profile and not user_profile.is_company:
-            self.fields["cv"] = forms.FileField(required=False)
+            self.fields["cv"] = forms.FileField(required=False,initial=self.instance.cv)
             self.fields["is_cv_public"] = forms.BooleanField(
                 required=False,
                 label="If you are nominated on our website to be in the top 10, you can choose this option to display your CV when someone clicks on your name in the top 10.",
