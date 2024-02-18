@@ -71,7 +71,7 @@ class Job(models.Model):  # inherited from models.Model , classes equivalent tab
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=25, default="")
+    name = models.CharField(max_length=100, default="")
 
     def __str__(self) -> str:
         return self.name
@@ -80,8 +80,8 @@ class Category(models.Model):
 class Apply(models.Model):
     job = models.ForeignKey(Job, on_delete=models.CASCADE)
     name = models.CharField(max_length=20, default="")
-    mail = models.EmailField(max_length=30, default="")
-    url = models.URLField(max_length=30, default="")
+    mail = models.EmailField(default="")
+    url = models.URLField(default="")
     info_for_applier = models.TextField(max_length=300, default="")
     cv = models.FileField(default='', blank=True, null=True)
 
