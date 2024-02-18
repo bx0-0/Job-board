@@ -212,6 +212,8 @@ def ProfileEdit(request):
                     )
 
                 MyProfileForm.user = request.user
+                if request.FILES['cv']:
+                    MyProfileForm.cv = request.FILES['cv']
                 MyProfileForm.save()  #!
 
                 return redirect(reverse("accounts:profile"))
