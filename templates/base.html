@@ -98,6 +98,30 @@
                                                 </ul>
                                             </li>
                                             <li><a href="{% url 'contact:send_massage' %}">Contact</a></li>
+                                            {% if request.user.is_authenticated %}
+                                                <li><a class="btn btn-link" href="{% url 'accounts:profile' %}">
+                                                    Your Profile
+                                                </a></li>
+                                                {% if not user.profile.is_company %}
+                                                <li><a class="btn btn-link" href="{% url 'blog:show_user_his_posts' %}">
+                                                    Your Technical Posts
+                                                </a></li>
+                                                {% endif %}
+                                                    
+                                                <li><a class="btn btn-link" href="{% url 'logout' %}">
+                                                    Logout
+                                                </a></li>
+                                           
+        
+                                            {% else %}
+                                                <li><a class="btn btn-link" href="{% url 'login' %}">Log in</a></li>
+        
+                                            
+                                           <li> <a class="btn btn-link" href="{% url 'accounts:signup' %}" style="color: aliceblue;">
+                                                Sing Up
+                                            </a></li>
+        
+                                            {% endif %}
                                         </ul>
                                     </nav>
                                 </div>
@@ -106,33 +130,7 @@
                                 <div class="Appointment">
 
 
-                                    {% if request.user.is_authenticated %}
-                                    <div class="phone_num d-none d-xl-block">
-                                        <a class="btn btn-link" href="{% url 'accounts:profile' %}">
-                                            Your Profile
-                                        </a>
-                                        {% if not user.profile.is_company %}
-                                        <a class="btn btn-link" href="{% url 'blog:show_user_his_posts' %}">
-                                            Your Technical Posts
-                                        </a>
-                                        {% endif %}
-                                            
-                                        <a class="btn btn-link" href="{% url 'logout' %}">
-                                            Logout
-                                        </a>
-                                    </div>
 
-                                    {% else %}
-                                    <div class="phone_num d-none d-xl-block">
-                                        <a class="btn btn-link" href="{% url 'login' %}">Log in</a>
-
-                                    </div>
-                                    
-                                    <a class="btn btn-link" href="{% url 'accounts:signup' %}" style="color: aliceblue;">
-                                        Sing Up
-                                    </a>
-
-                                    {% endif %}
 
                                     {% if user.profile.is_company %}
 

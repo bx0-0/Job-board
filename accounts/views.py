@@ -22,42 +22,55 @@ from django.utils.encoding import force_bytes, force_str
 
 @transaction.atomic
 def signup(request):
-    if request.method == "POST":
-        form = SignupForm(request.POST)
-        if form.is_valid():
-            user = form.save(commit=False)
-            if form.cleaned_data["email"]:
-                user.is_active = False
-            user.save()
-            Phone_number = form.cleaned_data["phone_number"]
-            is_company = form.cleaned_data["is_company"]
-            user.profile.phone_number = Phone_number
-            print(is_company)
-            user.profile.is_company = is_company
-            user.profile.save()
-            username = form.cleaned_data["username"]
-            password = form.cleaned_data["password1"]
-            email = form.cleaned_data["email"]
-            if email:
-                generate_token_send_verification_email_and_accounts(request, user)
-            else:
-                session_user = authenticate(username=username, password=password)
-                if session_user is not None:
-                    login(request, session_user)
-                    return redirect(reverse("accounts:profile_edit"))
-    else:
-        form = SignupForm()
-    context = {"form": form}
+    context = {}
+    try:
+        if request.method == "POST":
+            form = SignupForm(request.POST)
+            if form.is_valid():
+                user = form.save(commit=False)
+                email = form.cleaned_data["email"]
+                user.is_active = False if email else True
+                user.email = email if email else user.email
+                user.save()
+                Phone_number = form.cleaned_data["phone_number"]
+                is_company = form.cleaned_data["is_company"]
+                user.profile.phone_number = Phone_number
+                user.profile.is_company = is_company
+                user.profile.save()
+                username = form.cleaned_data["username"]
+                password = form.cleaned_data["password1"]
+
+                if email:
+                    generate_token_send_verification_email_and_accounts(
+                        request, user, "singup", email
+                    )
+                else:
+                    session_user = authenticate(username=username, password=password)
+                    if session_user is not None:
+                        login(request, session_user)
+                        return redirect(reverse("accounts:profile_edit"))
+        else:
+            form = SignupForm()
+        context = {"form": form}
+
+    except Exception as e:
+        messages.error(request, message=f"error occurred please try again {e}")
     return render(request, "registration/signup.html", context=context)
 
 
-def generate_token_send_verification_email_and_accounts(request, user):
+@transaction.atomic
+def generate_token_send_verification_email_and_accounts(
+    request, user, keword="", email=""
+):
     # Generate token
     token = default_token_generator.make_token(user)
     uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
-    activation_link = f"127.0.0.1:8000/accounts/activate/{uidb64}/{token}"
+    activation_link = (
+        f"https://django-job-board-59na.onrender.com/accounts/activate/{uidb64}/{token}"
+    )
     #!send email
-    if user.email:
+    print(email)
+    if keword == "singup" and email:
         try:
             message = f"""
                         Hi there,
@@ -76,12 +89,12 @@ def generate_token_send_verification_email_and_accounts(request, user):
                 subject=subject,
                 message=message,
                 from_email=settings.EMAIL_HOST_USER,  #!from
-                recipient_list=[user.email],  #! to
+                recipient_list=[email],  #! to
                 fail_silently=False,
             )
             messages.success(
                 request,
-                message="If you Enter your  gmail we send you a verification email",
+                message="we send you a verification email check  your inbox",
             )
 
         except TypeError as e:  # Catch the exception
@@ -133,8 +146,9 @@ def activate_user(request, uidb64, token):
 
             user.is_active = True
             user.save()
+            print(user.email)
             login(request, user)
-        return redirect(reverse("accounts:profile"))
+        return redirect(reverse("accounts:profile_edit"))
 
     return render(request, "registration/activate.html", context={})
 
@@ -152,18 +166,23 @@ def save_profile(sender, instance, **kwargs):
 
 @login_required
 def Profile_Show(request):
-    profile_ = profile.objects.get(user=request.user)
-    context = {
-        "profile": profile_,
-    }
+    context = {}
+    try:
+        profile_ = profile.objects.get(user=request.user)
+        context = {
+            "profile": profile_,
+        }
+    except Exception:
+        messages.error(request, message="An error occurred")
+
     return render(request, "registration/profile.html", context=context)
 
 
 @login_required
 def ProfileEdit(request):
-    user_profile, created = profile.objects.get_or_create(user=request.user)
-    if request.method == "POST":
-        try:
+    try:
+        user_profile, created = profile.objects.get_or_create(user=request.user)
+        if request.method == "POST":
             user_form = UserForm(request.POST, instance=request.user)
             profile_form = ProfileForm(
                 request.POST,
@@ -172,19 +191,14 @@ def ProfileEdit(request):
             )
 
             if user_form.is_valid() and profile_form.is_valid():
-                
                 email = User.objects.get(id=request.user.id).email
                 user_form.save()
-
                 MyProfileForm = profile_form.save(commit=False)
                 if "is_cv_public" in request.POST:
                     is_cv_public = profile_form.cleaned_data["is_cv_public"]
                     request.user.profile.is_cv_public = is_cv_public
                     request.user.profile.save()
-                    
-                
 
-                print(user_form.cleaned_data.get("email") != email)
                 if (
                     user_form.cleaned_data.get("email") != email
                     and "email" in user_form.changed_data
@@ -196,19 +210,21 @@ def ProfileEdit(request):
                     generate_token_send_verification_email_and_accounts(
                         request=request, user=request.user
                     )
-                    
-                MyProfileForm.user = request.user    
+
+                MyProfileForm.user = request.user
+                MyProfileForm.save()  #!
 
                 return redirect(reverse("accounts:profile"))
-        except Exception as e:
-            messages.error(request, message=f"Error occurred  try please again, {e}")
+        else:
+            user_form = UserForm(instance=request.user)
+            profile_form = ProfileForm(instance=user_profile)
 
-    else:
-        user_form = UserForm(instance=request.user)
-        profile_form = ProfileForm(instance=user_profile)
+        context = {
+            "UserForm": user_form,
+            "ProfileForm": profile_form,
+        }
+    except Exception as e:
+        messages.error(request, message=f"Error occurred  try please again, {e}")
+        context = {}
 
-    context = {
-        "UserForm": user_form,
-        "ProfileForm": profile_form,
-    }
     return render(request, "registration/profile_edit.html", context=context)

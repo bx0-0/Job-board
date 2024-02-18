@@ -13,12 +13,12 @@ from .filters import JobFilter
 
 
 def ShowJobsList(request):
-    JobList = Job.objects.all()  # django models queryset
+    JobList = Job.objects.all().order_by('id')  # django models queryset
     #!apply my filter 
     my_filter = JobFilter(request.GET,queryset=JobList)
     
     JobList = my_filter.qs    
-    paginator = Paginator(JobList, 3)  # show 1 content per page
+    paginator = Paginator(JobList, 3)  # show 3 content per page
     PageNumber = request.GET.get("page")  # get the number of page
     page_obj = paginator.get_page(PageNumber)  # this line complete the up  line
     context = {
@@ -27,6 +27,7 @@ def ShowJobsList(request):
     }
 
     return render(request, "Job/JobList.html", context)
+
 
 
 @login_required

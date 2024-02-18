@@ -22,6 +22,17 @@
   <!--/ bradcam_area  -->
 
    <!--================Blog Area =================-->
+   
+   {% if message %}
+   
+   {% for message in messages %}
+    
+   <p class="alert-heading">message</p>
+   {% endfor %}
+    
+    
+   
+    {% else %}
    <section class="blog_area single-post-area section-padding">
       <div class="container">
          <div class="row">
@@ -228,6 +239,7 @@
       </div>
       
    </section>
+   {% endif %}
    <!--================ Blog Area end =================-->
 
 </body>

@@ -19,7 +19,17 @@
         <h4 class="alert-heading">Tip!</h4>
         <p class="alert-heading">Creating technology-related posts will make you stand out on our main page as one of the top 10 candidates, therefore increasing your chances of finding better job opportunities.</p>
     </div>    <!--/ bradcam_area  -->
-
+    
+    {% if messages %}
+    
+    {% for message in messages %}
+    <p class="alert-heading">message</p>
+        
+    {% endfor %}
+        
+        
+    {% else %}
+        
     <div class="job_details_area class="container py-5">
         <div class="container">
             <div class="row" style="margin-left: 20% ;">
@@ -61,4 +71,5 @@
             </div>
         </div>
     </div>
+    {% endif %}
 {% endblock body %}

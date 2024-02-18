@@ -57,10 +57,8 @@ class UserForm(forms.ModelForm):
 
     def clean_email(self):
         email = self.cleaned_data["email"].lower().strip()
-        print(0)
         # If the email has changed, check if it exists in the database
         if User.objects.filter(email=email).exists() and email != self.instance.email:
-            print(2)
             raise ValidationError("email already exists")
 
         elif (
@@ -69,7 +67,6 @@ class UserForm(forms.ModelForm):
         ):
             return email
         else:
-            print(4)
             return self.instance.email
 
 

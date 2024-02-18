@@ -27,8 +27,11 @@ class profile(models.Model):
     is_company = models.BooleanField(default=True)
     ProfileImg = models.ImageField(upload_to=GetImageUploadTo, null=True, blank=True)
     cv = models.FileField(
-        upload_to=GetfileUploadTo, null=True, blank=True, default="", 
-    )  
+        upload_to=GetfileUploadTo,
+        null=True,
+        blank=True,
+        default="",
+    )
     # --An optional phone number.
     # phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
     phone_regex = RegexValidator(
@@ -43,14 +46,15 @@ class profile(models.Model):
     city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True, blank=True)
 
     specialization = models.CharField(max_length=100, blank=True, null=True)
-    
+
     is_cv_public = models.BooleanField(default=False)
+
     def __str__(self) -> str:
         return self.user.username
 
     def save(self, *args, **kwargs):
         self.handle_image_upload()
-        self.handle_cv_upload()  
+        self.handle_cv_upload()
 
         return super().save(*args, **kwargs)
 

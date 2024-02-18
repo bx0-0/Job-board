@@ -26,6 +26,13 @@
       <p class="alert-heading">here you can replay comment which you choice click for the Below replay button  to start</p>
    </div>
    <!--================Blog Area =================-->
+   {% if messages %}
+    
+   {% for message in messages %}
+   <p class="alert-heading">message</p>
+       
+   {% endfor %}
+   {% else %}
    <section class="blog_area single-post-area section-padding">
 
       <div class="container">
@@ -165,6 +172,7 @@
             </div>
          </div>
    </section>
+   {% endif %}
    <!--================ Blog Area end =================-->
 
 </body>

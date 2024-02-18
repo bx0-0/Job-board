@@ -26,6 +26,16 @@
 
 
     <!--================Blog Area =================-->
+    
+    {% if messages %}
+        
+    
+    {% for message in messages %}
+        <p class="alert-heading">message</p>
+    {% endfor %}
+    
+    {% else %}
+        
     <section class="blog_area section-padding">
         <div class="container">
             <div class="row">
@@ -164,6 +174,7 @@
             </div>
         </div>
     </section>
+    {% endif %}
     <!--================Blog Area =================-->
 
 
