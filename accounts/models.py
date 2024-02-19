@@ -70,7 +70,7 @@ class profile(models.Model):
                 if os.path.isfile(old_img.path):
                     os.remove(old_img.path)
 
-    def handle_cv_upload(self):  # دالة للتعامل مع تحميل السيرة الذاتية
+    def handle_cv_upload(self): 
         if self.cv:
             old_cv = profile.objects.get(pk=self.pk).cv
             if self.pk and profile.objects.get(pk=self.pk).cv and old_cv != self.cv:
