@@ -13,16 +13,16 @@ from .filters import JobFilter
 
 
 def ShowJobsList(request):
-    JobList = Job.objects.all().order_by('id')  # django models queryset
+    JobList = Job.objects.all().order_by('id') 
     #!apply my filter 
     my_filter = JobFilter(request.GET,queryset=JobList)
     
     JobList = my_filter.qs    
-    paginator = Paginator(JobList, 3)  # show 3 content per page
-    PageNumber = request.GET.get("page")  # get the number of page
-    page_obj = paginator.get_page(PageNumber)  # this line complete the up  line
+    paginator = Paginator(JobList, 3)  
+    PageNumber = request.GET.get("page")  
+    page_obj = paginator.get_page(PageNumber)  
     context = {
-        "jobs": page_obj,  # name of variable in  templates
+        "jobs": page_obj,  
         "my_filter": my_filter, 
     }
 
@@ -141,13 +141,13 @@ def send_applier_info_to_job_owner(request, job_owner_email, form,cv):
             path = cv.path
             email.attach_file(path)
 
-        # إرفاق النص HTML بالبريد الإلكتروني
+       
         email.attach_alternative(html_content, "text/html")
 
         email.send(fail_silently=False)
         
         messages.success(request, message="Email sent successfully thinks to use our site ")
         
-    except Exception as e:  # noqa: F841
-        form.delete() #لاحظ هنا ممكن  احذف الفورم  الي اتخزن  بالفعل في قاعدة البيانات  في حالة حدوث خطا    
+    except Exception as e: 
+        form.delete() 
         messages.error(request=request, message=f"Error sending please try again, {e}")
