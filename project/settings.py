@@ -27,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG','True')=='True'
 
 ALLOWED_HOSTS = ['*']
 
@@ -89,21 +89,24 @@ WSGI_APPLICATION = 'project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+if not DEBUG:
+    import dj_database_url  # noqa: E402
+
+    DATABASES={
+        'default': dj_database_url.parse(env('DATABASE_URL'))
+    }
+else:
+    
 #sqlite database
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 #postgres database
 
-import dj_database_url  # noqa: E402
-
-DATABASES={
-    'default': dj_database_url.parse(env('DATABASE_URL'))
-}
 
 
 # Password validation
@@ -146,6 +149,10 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
     '/var/www/static/',
 ]
+STATIC_ROOT = BASE_DIR/"assets"
+
+STATICFILES_STORAGE = "django_forgiving_collectstatic.storages.ForgivingManifestStaticFilesStorage"
+
 
 STATIC_ROOT = BASE_DIR/"assets"
 
