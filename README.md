@@ -102,17 +102,4 @@ http://127.0.0.1:8000/
 4. **Manage Content:**
    - Use the admin panel (`/admin`) to manage users, jobs, and posts.
 
----
 
-## Contributing
-
-If you wish to contribute to the development of the project, you can:
-
-1. Fork the project on GitHub.
-2. Create a new branch for your work:
-   ```bash
-   git checkout -b feature/new-feature
-   ```
-3. Make your changes and submit a Pull Request.
-
----
